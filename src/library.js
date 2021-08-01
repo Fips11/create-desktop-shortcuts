@@ -128,6 +128,12 @@ const library = {
   makeWindowsShortcut: function (options) {
     let success = true;
 
+    const windowModes = {
+      normal: 1,
+      maximized: 3,
+      minimized: 7
+    };
+
     let outputPath = options.windows.outputPath;
     let filePath = options.windows.filePath;
     let args = options.windows.arguments || '';
@@ -143,13 +149,6 @@ const library = {
       success = false;
       return success;
     }
-
-    const windowModes = {
-      normal: 1,
-      maximized: 3,
-      minimized: 7
-    };
-
 
     if (!icon) {
       if (
