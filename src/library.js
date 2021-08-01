@@ -116,17 +116,6 @@ const library = {
 
   // WINDOWS
   /**
-   * Returns the path to the windows.vbs file. Usefull for unit tests.
-   *
-   * @example
-   * let vbsPath = produceWindowsVBSPath();
-   *
-   * @return {string} The file path to the windows.vbs file
-   */
-  produceWindowsVBSPath: function () {
-    return path.join(__dirname, 'windows.vbs');
-  },
-  /**
    * Creates the data to be passed in to the VBScript based on user options.
    * Spawns a wscript child process to create the shortcut and log if error.
    *
@@ -139,7 +128,16 @@ const library = {
   makeWindowsShortcut: function (options) {
     let success = true;
 
-    const vbsScript = this.produceWindowsVBSPath();
+    let outputPath = options.windows.outputPath;
+    let filePath = options.windows.filePath;
+    let args = options.windows.arguments || '';
+    let comment = options.windows.comment || '';
+    let cwd = options.windows.workingDirectory || '';
+    let icon = options.windows.icon;
+    let windowMode = windowModes[options.windows.windowMode] || windowModes.normal;
+    let hotkey = options.windows.hotkey || '';
+    const vbsScript = options.windows.altFilePath || path.join(__dirname, 'windows.vbs');
+
     if (!fs.existsSync(vbsScript)) {
       helpers.throwError(options, 'Could not locate required "windows.vbs" file.');
       success = false;
@@ -152,14 +150,6 @@ const library = {
       minimized: 7
     };
 
-    let outputPath = options.windows.outputPath;
-    let filePath = options.windows.filePath;
-    let args = options.windows.arguments || '';
-    let comment = options.windows.comment || '';
-    let cwd = options.windows.workingDirectory || '';
-    let icon = options.windows.icon;
-    let windowMode = windowModes[options.windows.windowMode] || windowModes.normal;
-    let hotkey = options.windows.hotkey || '';
 
     if (!icon) {
       if (
